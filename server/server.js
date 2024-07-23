@@ -2,7 +2,7 @@ import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
 import { Server } from "socket.io";
-// import dbConnect from "./config/mongoose.config.js";
+import dbConnect from "./config/mongoose.config.js";
 import extractValidationErrors from "./util/ErrorExtractor.js";
 
 const app = express();
@@ -32,8 +32,8 @@ app.use((err, req, res, next) => {
 dotenv.config();
 const PORT = process.env.PORT;
 
-// const DB_NAME = '';
-// dbConnect(DB_NAME);
+const DB_NAME = 'RoyalHandDB';
+dbConnect(DB_NAME);
 
 // Server and Socket startup
 const server = app.listen(PORT, () => console.log(`Listening on PORT : ${PORT}`));
