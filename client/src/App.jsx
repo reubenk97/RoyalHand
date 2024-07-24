@@ -12,6 +12,7 @@ import cardsBack from './assets/cards-background.jpg';
 function App() {
   const [backImage, setBackImage] = useState(cardsBack);
   const [playerInfo, setPlayerInfo] = useState({
+    uuid: "",
     nickname: "",
     avatar: ""
   });

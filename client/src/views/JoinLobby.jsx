@@ -6,6 +6,7 @@ const JoinLobby = (props) => {
     const {setPlayerInfo} = props;
     const [newPlayer, setNewPlayer] = useState({
         lobbyId: '',
+        uuid: '',
         nickname: '',
         avatar: '🧔'
     });
@@ -13,7 +14,7 @@ const JoinLobby = (props) => {
 
     const handleSubmit = e => {
         e.preventDefault();
-        setPlayerInfo({nickname : newPlayer.nickname, avatar : newPlayer.avatar});
+        setPlayerInfo({uuid: self.crypto.randomUUID(), nickname : newPlayer.nickname, avatar : newPlayer.avatar});
         nav('/lobbies/1');
     }
 

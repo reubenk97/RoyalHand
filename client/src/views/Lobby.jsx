@@ -66,7 +66,7 @@ const Lobby = (props) => {
                 </div>
                 <div className="button-group">
                     <Button type={'leave'}>Leave</Button>
-                    {playerInfo.nickname == playerList[0]?.nickname ? <button onClick={handleStartGame} disabled={playerList?.length > 1 ? false : true}>Start Game</button> : null}
+                    {playerInfo.uuid == playerList[0]?.uuid ? <button onClick={handleStartGame} disabled={playerList?.length > 1 ? false : true}>Start Game</button> : null}
                 </div>
             </div>
         </div>

@@ -6,9 +6,10 @@ import { useNavigate } from "react-router-dom";
 const CreateLobby = (props) => {
     const {setPlayerInfo} = props;
     const [formInfo, setFormInfo] = useState({
-        maxPlayers: "2",
-        nickname: "",
-        avatar: "🧔"
+        maxPlayers:'2',
+        uuid: '',
+        nickname: '',
+        avatar: '🧔'
     })
     const nav = useNavigate();
 
@@ -26,7 +27,7 @@ const CreateLobby = (props) => {
 
     const handleSubmit = e => {
         e.preventDefault();
-        setPlayerInfo({nickname : formInfo.nickname, avatar : formInfo.avatar});
+        setPlayerInfo({uuid: self.crypto.randomUUID(), nickname : formInfo.nickname, avatar : formInfo.avatar});
         nav('/lobbies/1');
     }
 

@@ -53,7 +53,7 @@ io.on("connection", socket => {
         console.log('adding new player info');
         players.push({
             ...playerInfo,
-            id: socket.id
+            sid: socket.id
         });
         console.log(players);
         io.emit("players", players);
@@ -65,7 +65,7 @@ io.on("connection", socket => {
 
     socket.on("disconnect", () => {
         console.log(socket.id + " has disconnected");
-        players.splice(players.findIndex(player => player.id == socket.id), 1);
+        players.splice(players.findIndex(player => player.sid == socket.id), 1);
         io.emit("players", players);
     });
 });
