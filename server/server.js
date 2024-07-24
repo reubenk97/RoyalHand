@@ -4,9 +4,11 @@ import dotenv from "dotenv";
 import { Server } from "socket.io";
 import dbConnect from "./config/mongoose.config.js";
 import extractValidationErrors from "./util/ErrorExtractor.js";
+import lobbyRouter from "./routes/lobby.routes.js";
 
 const app = express();
 app.use(express.json(), cors());
+app.use('/api', lobbyRouter);
 
 //Catch all for routes without API call
 app.use((req, res, next) => {
@@ -39,7 +41,31 @@ dbConnect(DB_NAME);
 const server = app.listen(PORT, () => console.log(`Listening on PORT : ${PORT}`));
 const io = new Server(server, {cors: true});
 
+//SOCKET LOGIC
+const players = [];
+
 // Socket event listeners
 io.on("connection", socket => {
-    console.log(socket.id);
-})
+    console.log("client connected with id: " + socket.id);
+    console.log(players);
+
+    socket.on("new player", (playerInfo) => {
+        console.log('adding new player info');
+        players.push({
+            ...playerInfo,
+            id: socket.id
+        });
+        console.log(players);
+        io.emit("players", players);
+    })
+
+    socket.on("start", () => {
+        io.emit("start game");
+    })
+
+    socket.on("disconnect", () => {
+        console.log(socket.id + " has disconnected");
+        players.splice(players.findIndex(player => player.id == socket.id), 1);
+        io.emit("players", players);
+    });
+});

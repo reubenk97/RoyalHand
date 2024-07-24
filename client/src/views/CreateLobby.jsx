@@ -1,36 +1,64 @@
+import { useState } from "react";
 import Button from "../components/Button";
+import { useNavigate } from "react-router-dom";
 
 
-const CreateLobby = () => {
+const CreateLobby = (props) => {
+    const {setPlayerInfo} = props;
+    const [formInfo, setFormInfo] = useState({
+        maxPlayers: "2",
+        nickname: "",
+        avatar: "🧔"
+    })
+    const nav = useNavigate();
+
+    const handleMaxPlayers = e => {
+        setFormInfo(prevFormInfo => ({...prevFormInfo, [e.target.name]:e.target.value}));
+    }
+
+    const handleNickname = e => {
+        setFormInfo(prevFormInfo => ({...prevFormInfo, [e.target.name]:e.target.value}));
+    }
+
+    const handleAvatar = e => {
+        setFormInfo(prevFormInfo => ({...prevFormInfo, [e.target.name]:e.target.value}));
+    }
+
+    const handleSubmit = e => {
+        e.preventDefault();
+        setPlayerInfo({nickname : formInfo.nickname, avatar : formInfo.avatar});
+        nav('/lobbies/1');
+    }
 
     return (
         <div className="lobby">
             <h1>Create a Lobby</h1>
             <form>
-                <div>
+                <div className="left-col">
                     <label htmlFor="maxPlayers">Max Players</label>
                     <label htmlFor="nickname">Nickname</label>
                     <label htmlFor="avatar">Avatar</label>
                 </div>
-                <div>
-                    <select id="maxPlayers" name="maxPlayers">
-                        <option value="1">1</option>
+                <div className="right-col">
+                    <select id="maxPlayers" name="maxPlayers" onChange={handleMaxPlayers} value="2">
+                        <option value="1" disabled>1</option>
                         <option value="2">2</option>
-                        <option value="3">3</option>
-                        <option value="4">4</option>
+                        <option value="3" disabled>3</option>
+                        <option value="4" disabled>4</option>
                     </select>
-                    <input id="nickname" name="nickname" />
-                    <select id="avatar" name="avatar">
-                        <option value="A1">🧔</option>
-                        <option value="A2">👩</option>
-                        <option value="A3">🧒</option>
-                        <option value="A4">👧</option>
+                    <input id="nickname" name="nickname" onChange={handleNickname}/>
+                    <select id="avatar" name="avatar" onChange={handleAvatar}>
+                        <option value="🧔">🧔</option>
+                        <option value="👩">👩</option>
+                        <option value="🧒">🧒</option>
+                        <option value="👧">👧</option>
                     </select>
                 </div>
             </form>
             <div className="button-group">
                 <Button type={'back'}>Back</Button>
-                <Button type={'create game'} id={1}>Create Game</Button>
+                <button type="submit" onClick={handleSubmit}>Create Game</button>
+                {/* <Button type={'create game'} id={1}>Create Game</Button> */}
             </div>
         </div>
     );

@@ -1,37 +1,60 @@
-import { useParams } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
 import Button from '../components/Button';
+import io from 'socket.io-client';
 
-const Lobby = () => {
-    const { id } = useParams();
+const Lobby = (props) => {
+    const { playerInfo } = props;
+    const { lobbyId } = useParams();
+    const [socket] = useState(() => io(':8000'));
+    const [playerList, setPlayerList] = useState([]);
+    const nav = useNavigate();
+
+    useEffect(() => {
+        const onPlayers = (players) => {
+            setPlayerList(players);
+            console.log("i got players list");
+        }
+        const onDisconnect = () => {
+            console.log("disconnect");
+        }
+        const onStart = () => {
+            nav('/lobbies/1/play');
+        }
+
+        socket.emit("new player", playerInfo);
+
+        socket.on("players", onPlayers);
+        socket.on("disconnect", onDisconnect);
+        socket.on("start game", onStart);
+
+        return () => {
+            socket.off("players", onPlayers);
+            socket.off("disconnect", onDisconnect);
+        };
+    }, [socket]);
+
+    const handleStartGame = () => {
+        socket.emit("start");
+        nav('/lobbies/1/play');
+    }
 
     return (
         <div className="lobby">
             <div className="lobby-head">
                 <h3>Lobby</h3>
-                <p>Lobby ID: {id}</p>
+                <p>Lobby ID: {lobbyId}</p>
             </div>
             <fieldset className="player-group">
-                <legend>Players (4/4)</legend>
-                <div>
-                    {/* Player tile host - avatar and nickname */}
-                    <img></img>
-                    <p>Host</p>
-                </div>
-                <div>
-                    {/* Player tile 1 - avatar and nickname */}
-                    <img></img>
-                    <p>Player 1</p>
-                </div>
-                <div>
-                    {/* Player tile 2 - avatar and nickname */}
-                    <img></img>
-                    <p>Player 2</p>
-                </div>
-                <div>
-                    {/* Player tile 3 - avatar and nickname */}
-                    <img></img>
-                    <p>Player 3</p>
-                </div>
+                <legend>Players ({playerList.length}/4)</legend>
+                {playerList.map((player, idx) => 
+                    <div key={idx}>
+                        {/* <p>{player.id}</p> */}
+                        {/* Player tile host - avatar and nickname */}
+                        <h3>{player.avatar}</h3>
+                        <p>{player.nickname}</p>
+                    </div>
+                )}
             </fieldset>
             <div className='lobby-game-footer'>
                 <div>
@@ -43,7 +66,7 @@ const Lobby = () => {
                 </div>
                 <div className="button-group">
                     <Button type={'leave'}>Leave</Button>
-                    <Button type={'start'} id={id}>Start Game</Button>
+                    {playerInfo.nickname == playerList[0]?.nickname ? <button onClick={handleStartGame} disabled={playerList?.length > 1 ? false : true}>Start Game</button> : null}
                 </div>
             </div>
         </div>

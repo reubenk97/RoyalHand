@@ -23,7 +23,7 @@ $tertiary-color: #049e04;
 button {
     padding: 0.75rem;
     min-width: 7.5rem;
-    font-size: 18px;
+    font-size: 22px;
     border-radius: 10px;
     border: 2px solid $primary-color;
     background-color: $secondary-color;
@@ -83,21 +83,30 @@ button {
     border: 2px solid $primary-color;
     border-radius: 15px;
 
+    h1 {
+        font-size: 40px;
+    }
+
     form {
         @include flex-div(row, center, space-between);
         padding: 1rem;
+        min-height: 300px;
 
         div {
-            @include flex-div(column, center, space-between);
+            @include flex-div(column, center, space-around);
             gap: 2rem;
             padding: 1rem;
-
-            * {
-                padding: 0.5rem;
-            }
+            font-size: 25px;
+            min-height: inherit;
 
             select, input {
                 border-color: $primary-color;
+                font-size: 25px;
+                padding: 0.5rem 1.5rem;
+
+                &#nickname, &#lobbyId {
+                    max-width: 250px;
+                }
             }
         }
     }
@@ -105,7 +114,7 @@ button {
     .lobby-head {
         @include flex-div(row, center, space-between);
         min-width: 100%;
-        font-size: 30px;
+        font-size: 40px;
     
         p {
             padding: 0.5rem;
@@ -124,30 +133,36 @@ button {
         margin: 1rem 0;
         border-color: $primary-color;
         color: $primary-color;
+        min-width: 600px;
 
         legend {
-            padding: 0 0.5rem;
+            padding: 0.75rem;
+            font-size: 22px;
         }
 
         div {
             @include flex-div(column, center, center);
         }
+
+        p {
+            font-size: 20px;
+        }
     
-        img {
-            border: 2px solid $primary-color;
-            width: 50px;
-            height: 50px;
+        h3 {
+            font-size: 50px;
         }
     }
 
     .lobby-game-footer {
         @include flex-div(row, center, space-between);
         min-width: 100%;
+        font-size: 22px;
 
         select {
             color: $primary-color;
             outline-color: $primary-color;
             border-color: $primary-color;
+            font-size: 22px;
         }
     }
 
