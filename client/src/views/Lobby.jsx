@@ -5,7 +5,7 @@ import io from 'socket.io-client';
 
 const Lobby = (props) => {
     const { playerInfo } = props;
-    const { lobbyId } = useParams();
+    const { id } = useParams();
     const [socket] = useState(() => io(':8000'));
     const [playerList, setPlayerList] = useState([]);
     const nav = useNavigate();
@@ -43,7 +43,7 @@ const Lobby = (props) => {
         <div className="lobby">
             <div className="lobby-head">
                 <h3>Lobby</h3>
-                <p>Lobby ID: {lobbyId}</p>
+                <p>Lobby ID: {id}</p>
             </div>
             <fieldset className="player-group">
                 <legend>Players ({playerList.length}/4)</legend>
@@ -60,13 +60,14 @@ const Lobby = (props) => {
                 <div>
                     <label htmlFor="gameMode">Game Mode: </label>
                     <select name="gameMode" id="gameMode">
-                        <option>VC</option>
+                        <option>Donkey</option>
+                        <option disabled>VC</option>
                         <option disabled>Lucky</option>
                     </select>
                 </div>
                 <div className="button-group">
                     <Button type={'leave'}>Leave</Button>
-                    {playerInfo.uuid == playerList[0]?.uuid ? <button onClick={handleStartGame} disabled={playerList?.length > 1 ? false : true}>Start Game</button> : null}
+                    {playerInfo.uuid == playerList[0]?.uuid ? <button onClick={handleStartGame} disabled={playerList?.length > 1 ? false : true} style={{backgroundColor: playerList?.length > 1 ? "antiquewhite" : "gray"}}>Start Game</button> : null}
                 </div>
             </div>
         </div>

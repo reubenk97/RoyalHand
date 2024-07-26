@@ -185,29 +185,45 @@ button {
 
     .game-board-header {
         @include flex-div(row, center, none);
-        gap: 2rem;
+        gap: 1rem;
         position: absolute;
-        top: 50px;
-        left: 50px;
+        top: 400px;
+        left: 10px;
+        color: $secondary-color;
     }
 
     .player-hand {
         @include flex-div(row, center, center);
         height: 130px;
         min-width: 650px;
+        font-size: 25px;
     }
 
     .game-board-middle {
-        display: flex;
-        gap: 1rem;
-    }
+        @include flex-div(column, center, center);
+        gap: 3rem;
 
-    .card-pile {
-        border: 2px solid black;
-        border-radius: 5px;
-        height: 130px;
-        width: 100px;
-        padding: 1rem;
+        .card-piles {
+            display: flex;
+            gap: 1rem;
+
+            .card-pile {
+                border-radius: 5px;
+                height: 139px;
+                width: 100px;
+                text-align: center;
+            }
+        }
+
+        .turn-info {
+            @include flex-div(column, center, center);
+            gap: 1rem;
+        }
+
+        .turn {
+            font-size: 30px;
+            color: $secondary-color;
+        }
     }
 }
 
@@ -215,4 +231,23 @@ button {
     border: 1px solid $secondary-color;
     border-radius: 50%;
     padding: 0.25rem 0.75rem;
+}
+
+.card-img {
+    width: 100px;
+
+    &.in-hand {
+        margin-right: -50px;
+        margin-top: 10px;
+
+        &.your-hand {
+            margin-bottom: 10px;
+            cursor: pointer;
+    
+            &:hover {
+                transform: translateY(-20px) scale(1.2);
+                transition: 0.15s all ease-in-out;
+            }
+        }
+    }
 }

@@ -43,6 +43,7 @@ const io = new Server(server, {cors: true});
 
 //SOCKET LOGIC
 const players = [];
+const playedCards = [];
 
 // Socket event listeners
 io.on("connection", socket => {
@@ -66,6 +67,10 @@ io.on("connection", socket => {
     socket.on("player list", () => {
         io.emit("players", players);
     });
+
+    // socket.on("player move", card => {
+    //     playedCards.push(card);
+    // })
 
     socket.on("disconnect", () => {
         console.log(socket.id + " has disconnected");
