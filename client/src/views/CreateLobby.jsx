@@ -47,7 +47,7 @@ const CreateLobby = (props) => {
                         <option value="3" disabled>3</option>
                         <option value="4" disabled>4</option>
                     </select>
-                    <input id="nickname" name="nickname" onChange={handleNickname}/>
+                    <input id="nickname" name="nickname" onChange={handleNickname} autoComplete="off"/>
                     <select id="avatar" name="avatar" onChange={handleAvatar}>
                         <option value="🧔">🧔</option>
                         <option value="👩">👩</option>

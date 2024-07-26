@@ -29,7 +29,7 @@ const JoinLobby = (props) => {
                 </div>
                 <div className="right-col">
                     <input id="lobbyId" name="lobbyId" value={newPlayer.lobbyId} onChange={e => setNewPlayer(prevNewPlayer => ({...prevNewPlayer, [e.target.name] : e.target.value}))}/>
-                    <input id="nickname" name="nickname" onChange={e => setNewPlayer(prevNewPlayer => ({...prevNewPlayer, [e.target.name] : e.target.value}))}/>
+                    <input id="nickname" name="nickname" autoComplete="off" onChange={e => setNewPlayer(prevNewPlayer => ({...prevNewPlayer, [e.target.name] : e.target.value}))}/>
                     <select id="avatar" name="avatar" onChange={e => setNewPlayer(prevNewPlayer => ({...prevNewPlayer, [e.target.name] : e.target.value}))}>
                         <option value="🧔">🧔</option>
                         <option value="👩">👩</option>

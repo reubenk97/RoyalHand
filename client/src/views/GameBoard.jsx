@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import pokerBack from "../assets/poker-background.avif";
 import io from 'socket.io-client';
-import axios from 'axios';
 import Button from "../components/Button";
 
 const GameBoard = (props) => {
@@ -16,15 +15,6 @@ const GameBoard = (props) => {
 
     useEffect(() => {
         setBackImage(pokerBack);
-        axios.get("https://www.deckofcardsapi.com/api/deck/new/draw/?count=26")
-            .then(res => {
-                console.log(res.data);
-                for(let i = 0; i < res.data.cards.length-1; i+=2) {
-                    setPlayerOneHand(prevOneHand => [...prevOneHand, res.data.cards[i]]);
-                    setPlayerTwoHand(prevTwoHand => [...prevTwoHand, res.data.cards[i+1]]);
-                }
-            })
-            .catch(err => console.log(err))
     }, [])
 
     useEffect(() => {
@@ -32,34 +22,49 @@ const GameBoard = (props) => {
             setPlayerOne(players[0]);
             setPlayerTurn(players[0]);
             setPlayerTwo(players[1]);
-        }
+        };
+        const onPlayerHands = (p1Hand, p2Hand) => {
+            setPlayerOneHand(p1Hand);
+            setPlayerTwoHand(p2Hand);
+        };
+        const onSetOneHand = (pOneHand) => {
+            setPlayerOneHand(pOneHand);
+        };
+        const onSetTwoHand = (pTwoHand) => {
+            setPlayerTwoHand(pTwoHand);
+        };
+        const onSetPileCardAndTurn =  (pileCard, currTurn) => {
+            setPlayPileCard(pileCard);
+            setPlayerTurn(currTurn);
+        };
 
         socket.emit("player list");
         socket.on("players", onPlayers);
-
-        socket.emit("player hands", playerOneHand, playerTwoHand);
-        socket.on("current hands", (pOneHand, pTwoHand) => {
-            setPlayerOneHand(pOneHand);
-            setPlayerTwoHand(pTwoHand);
-        })
-
-        socket.on("current pile and turn", (pileCard, currTurn) => {
-            setPlayPileCard(pileCard);
-            setPlayerTurn(currTurn);
-        })
+        socket.on("player hands", onPlayerHands);
+        socket.on("current 1 hand", onSetOneHand);
+        socket.on("current 2 hand", onSetTwoHand);
+        socket.on("current pile and turn", onSetPileCardAndTurn);
 
         return () => {
             socket.off("players", onPlayers);
+            socket.off("player hands", onPlayerHands);
+            socket.off("current 1 hand", onSetOneHand);
+            socket.off("current 2 hand", onSetTwoHand);
+            socket.off("current pile and turn", onSetPileCardAndTurn);
         }
     }, [socket])
 
     const playerMove = (card) => {
         console.log("player " + playerInfo.nickname + " made a move with " + card.code);
         if (playerInfo.uuid == playerOne.uuid) {
-            setPlayerOneHand(prevHand => prevHand.filter(handCard => !(handCard.code == card.code)));
+            let updatedPlayerOneHand = playerOneHand.filter(handCard => !(handCard.code == card.code));
+            socket.emit("player hand 1 update", updatedPlayerOneHand);
+            // setPlayerOneHand(prevHand => prevHand.filter(handCard => !(handCard.code == card.code)));
         }
         else {
-            setPlayerTwoHand(prevHand => prevHand.filter(handCard => !(handCard.code == card.code)));
+            let updatedPlayerTwoHand = playerTwoHand.filter(handCard => !(handCard.code == card.code));
+            socket.emit("player hand 2 update", updatedPlayerTwoHand);
+            // setPlayerTwoHand(prevHand => prevHand.filter(handCard => !(handCard.code == card.code)));
         }
         socket.emit("player move", card);
     }
@@ -92,7 +97,7 @@ const GameBoard = (props) => {
                     <div className="card-pile">Discard</div>
                 </div>
                 <div className="turn-info">
-                    {playerInfo.uuid == playerTurn?.uuid ? <div className="turn">Your Turn!</div> : <div className="turn">Waiting on {playerTurn?.nickname}'s Turn...</div>}
+                    {playerInfo.uuid == playerTurn?.uuid ? <div className="turn" style={{color: "chartreuse"}}>Your Turn!</div> : <div className="turn">Waiting on {playerTurn?.nickname}'s Turn...</div>}
                     {/* {playerInfo.uuid == playerTurn?.uuid ? <button>Skip</button> : null} */}
                 </div>
             </div>

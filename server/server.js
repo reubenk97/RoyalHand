@@ -43,8 +43,8 @@ const io = new Server(server, {cors: true});
 
 //SOCKET LOGIC
 const players = [];
-const playerOneHand = [];
-const playerTwoHand = [];
+let playerOneHand = [];
+let playerTwoHand = [];
 let currTurn = {};
 const playedCards = [];
 let playPileCard = {};
@@ -67,20 +67,31 @@ io.on("connection", socket => {
     socket.on("start", () => {
         io.emit("start game");
         currTurn = players[0];
+        fetch ("https://www.deckofcardsapi.com/api/deck/new/draw/?count=26")
+            .then(res => res.json())
+            .then(data => {
+                console.log(data);
+                for(let i = 0; i < data.cards.length - 1; i+=2) {
+                    playerOneHand.push(data.cards[i])
+                    playerTwoHand.push(data.cards[i+1]);
+                }
+                io.emit("player hands", playerOneHand, playerTwoHand);
+            })
+            .catch(err => console.log(err))
     });
 
     socket.on("player list", () => {
         io.emit("players", players);
     });
 
-    socket.on("player hands", (pOneHand, pTwoHand) => {
-        for(let i = 0; i < pOneHand.length; i++) {
-            playerOneHand.push(pOneHand[i]);
-        }
-        for(let i = 0; i < pTwoHand.length; i++) {
-            playerTwoHand.push(pTwoHand[i]);
-        }
-        io.emit("current hands", playerOneHand, playerTwoHand);
+    socket.on("player hand 1 update", (hand) => {
+        playerOneHand = [...hand];
+        io.emit("current 1 hand", playerOneHand);
+    })
+
+    socket.on("player hand 2 update", (hand) => {
+        playerTwoHand = [...hand];
+        io.emit("current 2 hand", playerTwoHand);
     })
 
     socket.on("player move", (card) => {
