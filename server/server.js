@@ -57,11 +57,15 @@ io.on("connection", socket => {
         });
         console.log(players);
         io.emit("players", players);
-    })
+    });
 
     socket.on("start", () => {
         io.emit("start game");
-    })
+    });
+
+    socket.on("player list", () => {
+        io.emit("players", players);
+    });
 
     socket.on("disconnect", () => {
         console.log(socket.id + " has disconnected");

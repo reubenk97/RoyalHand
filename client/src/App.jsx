@@ -24,7 +24,7 @@ function App() {
         <Route path='/create' element={<CreateLobby setPlayerInfo={setPlayerInfo}/>} />
         <Route path='/join' element={<JoinLobby setPlayerInfo={setPlayerInfo}/>} />
         <Route path='/lobbies/:id' element={<Lobby playerInfo={playerInfo}/>} />
-        <Route path='/lobbies/:id/play' element={<GameBoard setBackImage={setBackImage} />} />
+        <Route path='/lobbies/:id/play' element={<GameBoard setBackImage={setBackImage} playerInfo={playerInfo}/>} />
       </Routes>
     </div>
   );

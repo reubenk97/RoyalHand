@@ -13,7 +13,6 @@ const Lobby = (props) => {
     useEffect(() => {
         const onPlayers = (players) => {
             setPlayerList(players);
-            console.log("i got players list");
         }
         const onDisconnect = () => {
             console.log("disconnect");
@@ -31,6 +30,7 @@ const Lobby = (props) => {
         return () => {
             socket.off("players", onPlayers);
             socket.off("disconnect", onDisconnect);
+            socket.off("start game", onStart);
         };
     }, [socket]);
 
