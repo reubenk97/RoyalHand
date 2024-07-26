@@ -43,7 +43,11 @@ const io = new Server(server, {cors: true});
 
 //SOCKET LOGIC
 const players = [];
+const playerOneHand = [];
+const playerTwoHand = [];
+let currTurn = {};
 const playedCards = [];
+let playPileCard = {};
 
 // Socket event listeners
 io.on("connection", socket => {
@@ -62,15 +66,32 @@ io.on("connection", socket => {
 
     socket.on("start", () => {
         io.emit("start game");
+        currTurn = players[0];
     });
 
     socket.on("player list", () => {
         io.emit("players", players);
     });
 
-    // socket.on("player move", card => {
-    //     playedCards.push(card);
-    // })
+    socket.on("player hands", (pOneHand, pTwoHand) => {
+        for(let i = 0; i < pOneHand.length; i++) {
+            playerOneHand.push(pOneHand[i]);
+        }
+        for(let i = 0; i < pTwoHand.length; i++) {
+            playerTwoHand.push(pTwoHand[i]);
+        }
+        io.emit("current hands", playerOneHand, playerTwoHand);
+    })
+
+    socket.on("player move", (card) => {
+        playedCards.push(card);
+        playPileCard = card;
+        if (currTurn == players[0])
+            currTurn = players[1];
+        else
+            currTurn = players[0];
+        io.emit("current pile and turn", playPileCard, currTurn);
+    })
 
     socket.on("disconnect", () => {
         console.log(socket.id + " has disconnected");

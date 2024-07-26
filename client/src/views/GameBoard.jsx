@@ -37,7 +37,16 @@ const GameBoard = (props) => {
         socket.emit("player list");
         socket.on("players", onPlayers);
 
-        // socket.emit("player hands");
+        socket.emit("player hands", playerOneHand, playerTwoHand);
+        socket.on("current hands", (pOneHand, pTwoHand) => {
+            setPlayerOneHand(pOneHand);
+            setPlayerTwoHand(pTwoHand);
+        })
+
+        socket.on("current pile and turn", (pileCard, currTurn) => {
+            setPlayPileCard(pileCard);
+            setPlayerTurn(currTurn);
+        })
 
         return () => {
             socket.off("players", onPlayers);
@@ -46,15 +55,13 @@ const GameBoard = (props) => {
 
     const playerMove = (card) => {
         console.log("player " + playerInfo.nickname + " made a move with " + card.code);
-        setPlayPileCard(card);
         if (playerInfo.uuid == playerOne.uuid) {
             setPlayerOneHand(prevHand => prevHand.filter(handCard => !(handCard.code == card.code)));
         }
         else {
             setPlayerTwoHand(prevHand => prevHand.filter(handCard => !(handCard.code == card.code)));
         }
-        // socket.emit("player move", card);
-        setPlayerTurn(prevTurn => prevTurn == playerOne ? playerTwo : playerOne);
+        socket.emit("player move", card);
     }
 
     return (
